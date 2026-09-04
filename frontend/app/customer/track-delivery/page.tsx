@@ -139,13 +139,11 @@ export default function TrackDeliveryPage() {
         </div>
       </div>
 
-      {previewStatus && (
-        <OrderStatusModal
-          isOpen={!!previewStatus}
-          onClose={() => setPreviewStatus(null)}
-          status={previewStatus}
-        />
-      )}
+      <OrderStatusModal
+        isOpen={previewStatus !== null}
+        onClose={() => setPreviewStatus(null)}
+        status={previewStatus ?? "confirmed"}
+      />
     </main>
   );
 }
