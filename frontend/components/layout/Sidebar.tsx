@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+//import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -10,17 +10,16 @@ import {
   Zap,
   Settings,
   Package,
-  BarChart3,
   DollarSign,
   ClipboardList,
   LogOut,
   Bot,
-  Moon,
   X,
   HistoryIcon,
 } from "lucide-react";
-import { useTheme} from "@/context/ThemeContext";
+//import { useTheme} from "@/context/ThemeContext";
 import type { Portal } from "@/types/portal";
+import { useAuth } from "@/context/AuthContext";
 
 type NavItem = {
   path: string;
@@ -41,7 +40,6 @@ const NAV_ITEMS: Record<Portal, NavItem[]> = {
   vendor: [
     { path: "dashboard", label: "Home", icon: LayoutDashboard },
     { path: "inventory", label: "Inventory", icon: Package },
-    { path: "analytics", label: "Analytics", icon: BarChart3 },
     { path: "earnings", label: "Earnings", icon: DollarSign },
     { path: "orders", label: "Orders", icon: ClipboardList },
     { path: "settings", label: "Settings", icon: Settings },
@@ -59,7 +57,9 @@ export default function Sidebar({
 }) {
   const items = NAV_ITEMS[portal];
   const pathname = usePathname();
-  const [lightMode, setLightMode] = useState(true);
+  const router = useRouter();
+  const { logout } = useAuth();
+ // const [lightMode, setLightMode] = useState(true);
 
   return (
     <>
@@ -123,31 +123,17 @@ export default function Sidebar({
         </div>
 
         <div className="mt-auto flex flex-col gap-1 border-t border-border pt-3">
-          <button className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-500 hover:bg-brand-50">
+          <button
+            onClick={() => {
+              logout();
+              router.push("/login");
+            }}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-ink-500 hover:bg-brand-50"
+          >
             <LogOut size={17} className="text-muted-500" />
             Log Out
           </button>
 
-          <button
-            onClick={() => setLightMode((prev) => !prev)}
-            className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-ink-500 hover:bg-brand-50"
-          >
-            <span className="flex items-center gap-3">
-              <Moon size={17} className="text-muted-500" />
-              Light Mode
-            </span>
-            <span
-              className={`relative h-5 w-9 rounded-full transition-colors ${
-                lightMode ? "bg-brand-500" : "bg-muted-100"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 h-4 w-4 rounded-full bg-white transition-transform ${
-                  lightMode ? "translate-x-4" : "translate-x-0.5"
-                }`}
-              />
-            </span>
-          </button>
         </div>
       </nav>
     </>
